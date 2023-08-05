@@ -1,9 +1,13 @@
-import java.util.*;
+package CarPackage;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 class Car {
-    private int speed;        // Speed in km/h
-    private String direction; // Direction: "N" (North), "S" (South), "E" (East), "W" (West)
-    private String color;     // Color of the car
+    private int speed;
+    private String direction;
+    private String color;
 
     public Car(int speed, String direction, String color) {
         this.speed = speed;
@@ -15,36 +19,12 @@ class Car {
         return speed;
     }
 
-    public void accelerate(int amount) {
-        speed += amount;
-    }
-
-    public void brake(int amount) {
-        speed = Math.max(0, speed - amount);
-    }
-
     public String getDirection() {
         return direction;
     }
 
     public String getColor() {
         return color;
-    }
-}
-
-class TrafficLight {
-    private boolean isGreen;
-
-    public TrafficLight() {
-        isGreen = false; // Initialize traffic light to red
-    }
-
-    public boolean isGreen() {
-        return isGreen;
-    }
-
-    public void setGreen(boolean isGreen) {
-        this.isGreen = isGreen;
     }
 }
 
@@ -67,8 +47,7 @@ public class IntersectionSimulator {
         }
 
         // Track car movements for generating the report
-        Map<String, Map<String, Integer>> reportData = 
-        		new HashMap<>();
+        Map<String, Map<String, Integer>> reportData = new HashMap<>();
         for (String direction : directions) {
             reportData.put(direction, new HashMap<>());
             for (String color : colors) {
@@ -80,15 +59,15 @@ public class IntersectionSimulator {
         for (int time = 0; time < SIMULATION_TIME_SECONDS; time++) {
             System.out.println("Time: " + time + " seconds");
 
-            // Randomly set the traffic light to green for one direction
+            // Randomly set the traffic light to Red for one direction
             int randomDirectionIndex = rand.nextInt(4);
-            String greenDirection = directions[randomDirectionIndex];
-            System.out.println("Traffic light is green for: " + greenDirection);
-            trafficLight.setGreen(true);
+            String RedDirection = directions[randomDirectionIndex];
+            System.out.println("Traffic light is Red for: " + RedDirection);
+            trafficLight.setRed(true);
 
             // Simulate car movements and update traffic light
             for (Car car : cars) {
-                if (car.getDirection().equals(greenDirection)) {
+                if (car.getDirection().equals(RedDirection)) {
                     System.out.println("Car going " + car.getDirection() + " with speed " + car.getSpeed() + " km/h");
                     int count = reportData.get(car.getDirection()).get(car.getColor());
                     reportData.get(car.getDirection()).put(car.getColor(), count + 1);
@@ -97,7 +76,7 @@ public class IntersectionSimulator {
                 }
             }
 
-            trafficLight.setGreen(false); // Set the traffic light back to red
+            trafficLight.setRed(false); // Set the traffic light back to red
             System.out.println("------------------");
 
             try {
@@ -117,5 +96,17 @@ public class IntersectionSimulator {
             }
             System.out.println("------------------");
         }
+    }
+}
+
+class TrafficLight {
+    private boolean isRed;
+
+    public void setRed(boolean isRed) {
+        this.isRed = isRed;
+    }
+
+    public boolean isRed() {
+        return isRed;
     }
 }
