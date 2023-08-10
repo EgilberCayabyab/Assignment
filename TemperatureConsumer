@@ -1,0 +1,45 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Scanner;
+
+public class TemperatureConsumer {
+
+    public static void main(String[] args) {
+        try {
+            // Prompt the user to enter a temperature in Celsius
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Please enter the temperature in Celsius: ");
+            double celsius = scanner.nextDouble();
+
+            // Construct the URL
+            String url = "http://localhost:8080/celsiusToFahrenheit?temp=" + celsius;
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+            // Get the response code
+            int responseCode = con.getResponseCode();
+
+            // Read the response
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            // Print the result
+            System.out.println(response.toString());
+
+            // Keep the terminal window open by waiting for the user to press Enter
+            System.out.println("Press Enter to exit...");
+            scanner.nextLine(); // Consume the remaining newline
+            scanner.nextLine(); // Wait for the user to press Enter
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
