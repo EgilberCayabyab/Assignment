@@ -1,0 +1,40 @@
+package webcrawlerproject;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+import org.json.JSONObject;
+
+public class webscraper {
+    public static void main(String[] args) throws IOException {
+        String url = "http://cnn.com";
+        
+        Document doc = Jsoup.connect(url).get();
+        Elements links = doc.select("a[href]");
+        
+        int i = 0;
+
+        for (var link : links) {
+            String linkHref = link.attr("abs:href");
+            Document linkedDoc = Jsoup.connect(linkHref).get();
+
+            // We'll store the title and body of the linked page.
+            String title = linkedDoc.title();
+            String body = linkedDoc.body().text();
+
+            // Create a JSON object.
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("title", title);
+            jsonObject.put("body", body);
+
+            // Write the JSON object to a file.
+            String jsonString = jsonObject.toString();
+            Files.write(Paths.get("page" + i++ + ".json"), jsonString.getBytes());
+
+            System.out.println("Data from " + linkHref + " stored to JSON file.");
+        }
+    }
+}
