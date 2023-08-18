@@ -1,0 +1,67 @@
+package webcrawlerproject;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class webcrawler {
+
+    public static void main(String[] args) {
+
+        Document document;
+        try {
+            // Get the HTML document
+            document = Jsoup.connect("http://cnn.com").get();
+
+            // Get the title of the webpage
+            String title = document.title();
+            System.out.println("Title: " + title);
+
+            // Get all links on the page
+            Elements links = document.select("a[href]");
+            
+            LinkStore linkStore = new LinkStore();
+            for (Element link : links) {
+                linkStore.addLink(new Link(link.attr("href")));
+            }
+            linkStore.displayLinks();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static class LinkStore {
+        private final List<Link> links;
+
+        public LinkStore() {
+            this.links = new ArrayList<>();
+        }
+
+        public void addLink(Link link) {
+            this.links.add(link);
+        }
+
+        public void displayLinks() {
+            for (Link link : links) {
+                System.out.println(link.getLink());
+            }
+        }
+    }
+
+    public static class Link {
+        private final String link;
+
+        public Link(String link) {
+            this.link = link;
+        }
+
+        public String getLink() {
+            return this.link;
+        }
+    }
+}
